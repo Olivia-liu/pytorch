@@ -25,6 +25,7 @@ def autograd_registration_check(op, args, kwargs):
 
     Example usage:
         >>> x = torch.randn(3, requires_grad=True)
+        >>> assert x.requires_grad
         >>> autograd_registration_check(torch.ops.aten.sin.default, (x,), {})
 
     Here are some best practices if you do find your autograd is
@@ -74,7 +75,7 @@ def autograd_registration_check(op, args, kwargs):
     all_tensors = [arg for arg in flat_args if isinstance(arg, torch.Tensor)]
     if not any(t.requires_grad for t in all_tensors):
         raise RuntimeError(
-            "autograd_registration_check: no inputs have requires_grad=True so "
+            f"autograd_registration_check: no inputs in {all_tensors} ({flat_args}) have requires_grad=True so "
             "we are unable to actually perform this test. Please pass inputs "
             "that do require grad."
         )
